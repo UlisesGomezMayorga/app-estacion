@@ -1,0 +1,72 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Josefin Sans', sans-serif;
+}
+
+body{
+	height: 100vh;
+	width: 100vw;
+
+}
+#wrapper {
+	height: 100vh;
+	width: 100vw;
+	background-color: #96a3d9;
+}
+
+#listado {
+	height: 80%;
+	padding: 4vw;
+	gap: 2%;
+}
+
+#titulo {
+	height: 10vh;
+	font-size: 4vh;
+	color: white;
+	margin-bottom: 5vh;
+}
+
+.tarjeta {
+	height: 30vh;
+	width: 30%;
+	background-color: #4a4a79;
+	border: solid 1px;
+	text-decoration: none;
+	color: white;
+}
+.tarjeta:hover {
+	scale: 1.05;
+}
+.nombre-estacion {
+	font-size: 4vh;
+}
+.ubicacion-estacion {
+	font-size: 2vh;
+}
+.visitas-estacion {
+	font-size: 1.5vh;
+}
+
+/* POSICIONAMIENTOS*/
+
+
+.dflex{
+	display: flex;
+}
+
+.align-center{
+	align-items: center;
+}
+
+.flex-column{
+	flex-direction: column;
+}
+.justify-center{
+	justify-content: center
+}
+.fwrap{
+	flex-wrap: wrap;
+}

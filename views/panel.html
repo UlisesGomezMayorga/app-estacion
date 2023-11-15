@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="static/css/panel.css">
+	<title>App-Estación</title>
+</head>
+<body>
+<div id="wrapper">
+			<div id="titulo" class="dflex justify-center align-center">Estaciones Meteorológicas</div>
+
+		<div id="listado" class="dflex align-center fwrap">
+			<template id="plantilla">
+				<a href="" class="tarjeta dflex align-center flex-column justify-center">
+					<div class="nombre-estacion">
+					</div>
+					<div class="ubicacion-estacion">
+						
+					</div>
+					<div class="visitas-estacion">
+					</div>
+				</a>
+			</template>
+	</div>
+
+	<script>
+document.addEventListener("DOMContentLoaded", () => {
+	obtenerEstaciones().then( data => {
+		data.forEach(function(element, index){
+			clonarTarjeta(element)
+		})
+	})
+})
+async function obtenerEstaciones(){
+	const response = await fetch("api/index.php");
+	const data = await response.json()
+
+	return data
+}
+function clonarTarjeta(info){
+
+	let tpl = document.querySelector("#plantilla")
+	let clon = tpl.content.cloneNode(true)
+	clon.querySelector(".tarjeta").setAttribute("href", "detalle?chipid="+info.chipId)
+	clon.querySelector(".ubicacion-estacion").innerHTML= info.ubicacion
+	clon.querySelector(".visitas-estacion").innerHTML = "Visitas Realizadas: " + info.visitas
+	clon.querySelector(".nombre-estacion").innerHTML = info.apodo
+	document.querySelector("#listado").appendChild(clon)
+}
+
+
+	</script>
+</body>
+</html>
