@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="static/css/detalle.css">
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<title>App-Estación</title>
+</head>
+<body>
+<div id="wrapper">
+		<div id="listado" class="dflex align-center fwrap justify-center">
+			<div id="temp-estacion" onclick="cambiarDatos('temperatura')" class="opcion dflex justify-center align-center">Temperatura</div>
+			<div id="hum-estacion" onclick="cambiarDatos('humedad')" class="opcion dflex justify-center align-center">Humedad</div>
+			<div id="vie-estacion" onclick="cambiarDatos('viento')" class="opcion dflex justify-center align-center">Viento</div>
+			<div id="prob-estacion" onclick="cambiarDatos('probabilidad')" class="opcion dflex justify-center align-center">Probabilidad</div>
+			<div id="pres-estacion" onclick="cambiarDatos('presion')" class="opcion dflex justify-center align-center">Presión</div>
+		</div>
+		<main>
+			<content>
+				<div id="info">
+					<div id="detalles_info"></div>
+				</div>
+				<div id="grafico-container">
+					<canvas id="grafico-dolar"></canvas>
+				</div>
+			</content>
+
+		</main>
+</div>
+<script>
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    cargarDatos('api/index.php?modo=detallesEstacion&chipId={{CHIP}}', 'temperatura');
+    setInterval(() => {
+        cargarDatos('api/index.php?modo=detallesEstacion&chipId={{CHIP}}', 'temperatura');
+    }, 60000);
+});
+
+async function cargarDatos(url, tipoDato) {
+    const response = await fetch(url);
+    const data = await response.json();
+    // createOpciones(data[0])
+    // showData(data)
+    procesarDatos(data, tipoDato);
+}
+
+function procesarDatos(datos, tipoDato) {
+    let periodo = [];
+    let datosGrafico = [];
+    for (let i = datos.length - 1; i >= 0; i--) {
+        periodo.push(datos[i].fecha);
+        if (tipoDato === 'temperatura') {
+            datosGrafico.push(datos[i].temperatura);
+			document.getElementById('detalles_info').innerHTML = "Temperatura actual " + datos[i].temperatura + "°c"
+        } else if (tipoDato === 'humedad') {
+            datosGrafico.push(datos[i].humedad);
+			document.getElementById('detalles_info').innerHTML = "Humedad actual " + datos[i].humedad + "%"
+        }else if(tipoDato === 'viento'){
+            datosGrafico.push(datos[i].viento);
+			document.getElementById('detalles_info').innerHTML = "Viento actual " + datos[i].viento + "Km/H"
+        }else if(tipoDato === 'probabilidad'){
+            datosGrafico.push(datos[i].fwi);
+			document.getElementById('detalles_info').innerHTML = "Probabilidad de incendio " + getProbabilidad(datos[i].fwi)
+        }else if(tipoDato === 'presion'){
+            datosGrafico.push(datos[i].presion);
+			document.getElementById('detalles_info').innerHTML = "Presión atmosférica actual " + datos[i].viento + "hPa"
+
+        }
+    }
+
+    const valores = {
+        labels: periodo,
+        datasets: [{
+            label: tipoDato.charAt(0).toUpperCase() + tipoDato.slice(1),
+            backgroundColor: '#ec512b',
+            borderColor: '#ec512b',
+            data: datosGrafico
+        }]
+    };
+
+    pintaGrafico(valores, `${tipoDato.charAt(0).toUpperCase() + tipoDato.slice(1)} Histórico`);
+}
+
+function pintaGrafico(valores, titulo) {
+    const options = {
+        indexAxis: 'x',
+        plugins: {
+            title: {
+                display: false,
+                text: titulo,
+                font: {
+                    size: 30
+                }
+            }
+        },
+        animation: {
+            duration: 0
+        },
+        responsive: true,
+        responsiveAnimationDuration: 0,
+    };
+
+    const config = {
+        type: 'line',
+        data: valores,
+        options: options
+    };
+
+    let graficoExistente = Chart.getChart("grafico-dolar");
+    if (graficoExistente) {
+        graficoExistente.destroy();
+    }
+    let grafico = new Chart(document.querySelector("#grafico-dolar"), config);
+}
+
+function cambiarDatos(tipoDato) {
+    cargarDatos('api/index.php?modo=detallesEstacion&chipId={{CHIP}}', tipoDato);
+}
+
+
+	function getProbabilidad(fwi){
+		let fwi_parse = parseFloat(fwi)
+		if(fwi_parse>=50){
+			return "Extremo"
+		}else{
+			if(fwi_parse>=38){
+				return "Muy alto"
+			}else{
+				if(fwi_parse>=21.3){
+					return "Alto"
+				}else{
+					if(fwi_parse>=11.2){
+						return "Moderado"
+					}else{
+						if(fwi_parse>=5.2){
+							return "Bajo"
+						}else{
+							return "Muy bajo"
+						}
+					}
+				}
+			}
+		}
+	}
+
+	function createOpciones(info){
+		console.log(info)
+		let probabilidad = getProbabilidad(info.fwi)
+		document.getElementById('temp-estacion').innerHTML = info.temperatura +"°c"
+		document.getElementById('hum-estacion').innerHTML = info.humedad + '%'
+		document.getElementById('vie-estacion').innerHTML = info.viento + 'Km/H'
+		document.getElementById('prob-estacion').innerHTML = probabilidad
+		document.getElementById('pres-estacion').innerHTML = info.presion + 'hPa'
+	}
+
+	function showData(data){
+		document.getElementById('temp-estacion').innerHTML = info.temperatura +"°c"
+	}
+</script>
+</body>
+</html>

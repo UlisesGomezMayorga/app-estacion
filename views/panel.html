@@ -8,8 +8,7 @@
 </head>
 <body>
 <div id="wrapper">
-			<div id="titulo" class="dflex justify-center align-center">Estaciones Meteorológicas</div>
-
+		<div id="titulo" class="dflex justify-center align-center">Estaciones Meteorológicas</div>
 		<div id="listado" class="dflex align-center fwrap">
 			<template id="plantilla">
 				<a href="" class="tarjeta dflex align-center flex-column justify-center">
@@ -33,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	})
 })
 async function obtenerEstaciones(){
-	const response = await fetch("api/index.php");
+	const response = await fetch("api/index.php?modo=listarEstaciones");
 	const data = await response.json()
 
 	return data

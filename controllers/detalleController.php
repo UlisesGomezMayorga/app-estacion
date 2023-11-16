@@ -1,5 +1,6 @@
 <?php 
-echo('detalle ');
 $chipId = explode('=', $_SERVER['REQUEST_URI']);
-var_dump($chipId[1]);
+$tpl = file_get_contents('views/detalle.html');
+$tpl = str_replace("{{CHIP}}", $chipId[1], $tpl);
+echo($tpl);
  ?>
