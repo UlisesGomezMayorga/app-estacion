@@ -1,3 +1,5 @@
 <?php 
-echo('landing');
+
+include 'views/landing.html';
+
  ?>
