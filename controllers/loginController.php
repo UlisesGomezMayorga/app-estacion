@@ -8,6 +8,10 @@
 	if(isset($_POST['btnLogin'])){
 		$email = $_POST['user'];
 		$pass = $_POST['pass'];
+        if($email == 'admin-estacion' && $pass == 'admin1234'){
+            $_SESSION['user'] = $email;
+            header('Location:administrator');
+        }
         $ssql = "SELECT * FROM `usuario`";
         $response = query($ssql);
         $usuarios = $response->fetch_all(MYSQLI_ASSOC);
